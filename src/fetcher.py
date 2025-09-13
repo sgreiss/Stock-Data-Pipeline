@@ -2,7 +2,6 @@
 
 import yfinance as yf
 import pandas as pd
-import requests
 from typing import Optional
 
 
@@ -27,16 +26,14 @@ def fetch_yfinance(
 
     if data is None or data.empty:
         return pd.DataFrame()
+    
+    if isinstance(data.columns, pd.MultiIndex):
+        data.columns = [col[0] if col[1] == "" else col[0] for col in data.columns]
 
-    data = data.reset_index().rename(columns={"Date": "date"})
+    data = data.reset_index()
+    data["Ticker"] = ticker
 
-    cols = [
-        c
-        for c in ["date", "Open", "High", "Low", "Close", "Adj Close", "Volume"]
-        if c in data.columns
-    ]
-
-    return data[cols]
+    return data.rename(columns={"Date": "date"})
 
 
 # fetch_alpha_vantage() ... could be implemented here
