@@ -62,3 +62,5 @@ if __name__ == "__main__":
 
     tickers = [ticker.strip().upper() for ticker in args.tickers.split(",")]
     run(tickers, args.period, args.interval, args.csv_dir, args.sqlite_db)
+
+# example usage: python main.py --tickers AAPL,MSFT --period 6mo --interval 1d
