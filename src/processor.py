@@ -1,0 +1,38 @@
+# processor.py
+
+import pandas as pd
+
+
+def process_data(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Clean data; set timezone to UTC; computer daily return, moving average, and volatility.
+    Returns a new DataFrame with processed data.
+    """
+
+    if df is None or df.empty:
+        return df
+
+    df = df.copy()
+    df["date"] = pd.to_datetime(df["date"])
+
+    # Ensure timezone is UTC
+    if df["date"].dt.tz is None:
+        df["date"] = df["date"].dt.tz_localize("UTC")
+    else:
+        df["date"] = df["date"].dt.tz_convert("UTC")
+
+    df = df.sort_values("date").reset_index(drop=True)
+
+    if "Close" not in df.columns:
+        raise ValueError(
+            "DataFrame must contain 'Close' column to compute daily returns."
+        )
+
+    # Calculate daily return, 20-day moving average, and 20-day volatility
+    df["daily_return"] = df["Close"].pct_change()
+    df["ma20"] = df["Close"].rolling(window=20, min_periods=1).mean()
+    df["vol20"] = df["daily_return"].rolling(window=20, min_periods=1).std()
+
+    df = df.dropna(subset=["Close"]).reset_index(drop=True)
+
+    return df

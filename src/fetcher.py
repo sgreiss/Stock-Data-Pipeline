@@ -17,6 +17,7 @@ def fetch_yfinance(
     Fetch historical market data from Yahoo Finance. Returns a pandas DataFrame.
     """
 
+    # If start and end dates are provided, use them; otherwise, use period
     if start or end:
         data = yf.download(
             ticker, start=start, end=end, interval=interval, progress=False
@@ -36,3 +37,5 @@ def fetch_yfinance(
     ]
 
     return data[cols]
+
+# fetch_alpha_vantage() ... could be implemented here
