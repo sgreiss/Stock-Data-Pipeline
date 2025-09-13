@@ -38,4 +38,5 @@ def fetch_yfinance(
 
     return data[cols]
 
+
 # fetch_alpha_vantage() ... could be implemented here

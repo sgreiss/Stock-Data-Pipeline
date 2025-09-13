@@ -1,10 +1,10 @@
 tickers:
-  - AAPL
-  - MSFT
-  - TSLA
+    - AAPL
+    - MSFT
+    - TSLA
 data:
-  period: 1y
-  interval: 1d
+    period: 1y
+    interval: 1d
 storage:
-  csv_dir: data/csv
-  sqlite_db: data/stocks.db
+    csv_dir: data/csv
+    sqlite_db: data/stocks.db
