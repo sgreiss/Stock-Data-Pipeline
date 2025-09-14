@@ -15,3 +15,5 @@ def test_fetch_yfinance():
     assert not df.empty
     assert "Close" in df.columns
     assert "date" in df.columns
+
+# Note: Testing fetch_alpha_vantage is omitted due to premium API key preference.
