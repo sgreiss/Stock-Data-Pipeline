@@ -23,4 +23,7 @@ def save_to_sqlite(
 
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
     engine = create_engine(f"sqlite:///{db_path}")
-    df.to_sql(table_name, engine, if_exists="replace", index=False)
+    try:
+        df.to_sql(table_name, engine, if_exists="replace", index=False)
+    finally:
+        engine.dispose()

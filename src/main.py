@@ -24,19 +24,27 @@ def run(tickers, period, interval, csv_dir, sqlite_db) -> None:
         data = fetch_yfinance(ticker=ticker, period=period, interval=interval)
 
         if data.empty:
-            logging.warning(f"{c.RED}No data fetched for {c.PURPLE}{ticker}{c.RED}.{c.END}\n")
+            logging.warning(
+                f"{c.RED}No data fetched for {c.PURPLE}{ticker}{c.RED}.{c.END}\n"
+            )
             continue
 
-        logging.info(f"{c.GREEN}Processing data for {c.PURPLE}{ticker}{c.GREEN}...{c.END}\n")
+        logging.info(
+            f"{c.GREEN}Processing data for {c.PURPLE}{ticker}{c.GREEN}...{c.END}\n"
+        )
         processed_data = process_data(data)
 
         processed_data["Ticker"] = ticker
 
         csv_path = os.path.join(csv_dir, f"{ticker}.csv")
-        logging.info(f"{c.GREEN}Saving data for {c.PURPLE}{ticker}{c.GREEN} to CSV with path {c.PURPLE}{csv_path}{c.GREEN}...{c.END}\n")
+        logging.info(
+            f"{c.GREEN}Saving data for {c.PURPLE}{ticker}{c.GREEN} to CSV with path {c.PURPLE}{csv_path}{c.GREEN}...{c.END}\n"
+        )
         save_to_csv(df=processed_data, path=csv_path)
 
-        logging.info(f"{c.GREEN}Saving data for {c.PURPLE}{ticker}{c.GREEN} to SQLite database {c.PURPLE}{sqlite_db}{c.GREEN}...{c.END}\n")
+        logging.info(
+            f"{c.GREEN}Saving data for {c.PURPLE}{ticker}{c.GREEN} to SQLite database {c.PURPLE}{sqlite_db}{c.GREEN}...{c.END}\n"
+        )
         save_to_sqlite(df=processed_data, db_path=sqlite_db, table_name="stock_data")
 
     logging.info(f"{c.BLUE}Data pipeline completed.{c.END}\n")
@@ -63,4 +71,5 @@ if __name__ == "__main__":
     tickers = [ticker.strip().upper() for ticker in args.tickers.split(",")]
     run(tickers, args.period, args.interval, args.csv_dir, args.sqlite_db)
 
-# example usage: python main.py --tickers AAPL,MSFT --period 6mo --interval 1d
+# example usage: python main.py --tickers AAPL,MSFT --period 6mo --interval 1dF
+# run venv with .venv\Scripts\activate

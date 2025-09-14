@@ -1,8 +1,10 @@
-#text_colors.py
-#credit to https://gist.github.com/rene-d/9e584a7dd2935d0f461904b9f2950007
+# text_colors.py
+# credit to https://gist.github.com/rene-d/9e584a7dd2935d0f461904b9f2950007
+
 
 class Colors:
-    """ ANSI color codes """
+    """ANSI color codes"""
+
     BLACK = "\033[0;30m"
     RED = "\033[0;31m"
     GREEN = "\033[0;32m"

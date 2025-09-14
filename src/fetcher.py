@@ -19,14 +19,21 @@ def fetch_yfinance(
     # If start and end dates are provided, use them; otherwise, use period
     if start or end:
         data = yf.download(
-            ticker, start=start, end=end, interval=interval, progress=False
+            ticker,
+            start=start,
+            end=end,
+            interval=interval,
+            progress=False,
+            auto_adjust=True,
         )
     else:
-        data = yf.download(ticker, period=period, interval=interval, progress=False)
+        data = yf.download(
+            ticker, period=period, interval=interval, progress=False, auto_adjust=True
+        )
 
     if data is None or data.empty:
         return pd.DataFrame()
-    
+
     if isinstance(data.columns, pd.MultiIndex):
         data.columns = [col[0] if col[1] == "" else col[0] for col in data.columns]
 

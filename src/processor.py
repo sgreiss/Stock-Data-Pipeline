@@ -15,6 +15,12 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df["date"] = pd.to_datetime(df["date"])
 
+    if (
+        pd.api.types.is_datetime64_any_dtype(df["date"])
+        and df["date"].dt.tz is not None
+    ):
+        df["date"] = df["date"].dt.tz_convert(None)
+
     # Ensure timezone is UTC
     if df["date"].dt.tz is None:
         df["date"] = df["date"].dt.tz_localize("UTC")
