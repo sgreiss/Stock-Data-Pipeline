@@ -4,5 +4,4 @@ __pycache__/
 *.db
 data/
 .env
-keys/
 reminders.txt

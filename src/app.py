@@ -1,9 +1,8 @@
-#app.py
+# app.py
 
 import streamlit as st
 import pandas as pd
 import os
-import pytz
 from datetime import datetime
 
 CSV_DIR = "../data/csv"
@@ -24,7 +23,9 @@ for ticker in selected_ticker:
     if os.path.exists(file_path):
         df = pd.read_csv(file_path, parse_dates=["date"])
         df["date"] = df["date"].dt.tz_convert(None)
-        mask = (df["date"] >= pd.to_datetime(start_date)) & (df["date"] <= pd.to_datetime(end_date))
+        mask = (df["date"] >= pd.to_datetime(start_date)) & (
+            df["date"] <= pd.to_datetime(end_date)
+        )
         df = df.loc[mask]
 
         st.subheader(f"{ticker} Stock Price")

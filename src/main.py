@@ -7,6 +7,7 @@ from text_colors import Colors as c
 from fetcher import fetch_yfinance, fetch_alpha_vantage
 from processor import process_data
 from storage import save_to_csv, save_to_sqlite
+from database import get_engine
 
 # Set up logging
 logging.basicConfig(
@@ -27,7 +28,9 @@ def run(tickers, source, period, interval, csv_dir, sqlite_db) -> None:
         elif source == "alpha_vantage":
             data = fetch_alpha_vantage(ticker=ticker)
         else:
-            logging.error(f"{c.RED}Unknown data source: {c.PURPLE}{source}{c.RED}.{c.END}\n")
+            logging.error(
+                f"{c.RED}Unknown data source: {c.PURPLE}{source}{c.RED}.{c.END}\n"
+            )
             continue
 
         if data.empty:
@@ -40,6 +43,11 @@ def run(tickers, source, period, interval, csv_dir, sqlite_db) -> None:
             f"{c.GREEN}Processing data for {c.PURPLE}{ticker}{c.GREEN}...{c.END}\n"
         )
         processed_data = process_data(data)
+
+        engine = get_engine()
+        processed_data.to_sql(
+            name="stock_data", con=engine, if_exists="append", index=False
+        )
 
         processed_data["Ticker"] = ticker
 
@@ -85,5 +93,5 @@ if __name__ == "__main__":
     tickers = [ticker.strip().upper() for ticker in args.tickers.split(",")]
     run(tickers, args.source, args.period, args.interval, args.csv_dir, args.sqlite_db)
 
-# example usage: python main.py --tickers AAPL,MSFT --source yfinance --period 6mo --interval 1dF
+# example usage: python main.py --tickers AAPL,MSFT --source yfinance --period 6mo --interval 1d
 # run venv with .venv\Scripts\activate
