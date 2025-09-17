@@ -49,7 +49,7 @@ def run(tickers, source, period, interval, csv_dir, sqlite_db) -> None:
             name="stock_data", con=engine, if_exists="append", index=False
         )
 
-        processed_data["Ticker"] = ticker
+        processed_data["ticker"] = ticker
 
         csv_path = os.path.join(csv_dir, f"{ticker}.csv")
         logging.info(

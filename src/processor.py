@@ -29,16 +29,16 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.sort_values("date").reset_index(drop=True)
 
-    if "Close" not in df.columns:
+    if "close" not in df.columns:
         raise ValueError(
-            "DataFrame must contain 'Close' column to compute daily returns."
+            "DataFrame must contain 'close' column to compute daily returns."
         )
 
     # Calculate daily return, 20-day moving average, and 20-day volatility
-    df["daily_return"] = df["Close"].pct_change()
-    df["ma20"] = df["Close"].rolling(window=20, min_periods=1).mean()
+    df["daily_return"] = df["close"].pct_change()
+    df["ma20"] = df["close"].rolling(window=20, min_periods=1).mean()
     df["vol20"] = df["daily_return"].rolling(window=20, min_periods=1).std()
 
-    df = df.dropna(subset=["Close"]).reset_index(drop=True)
+    df = df.dropna(subset=["close"]).reset_index(drop=True)
 
     return df

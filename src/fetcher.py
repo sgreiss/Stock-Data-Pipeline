@@ -45,9 +45,11 @@ def fetch_yfinance(
         data.columns = [col[0] if col[1] == "" else col[0] for col in data.columns]
 
     data = data.reset_index()
-    data["Ticker"] = ticker
+    data["ticker"] = ticker
 
-    return data.rename(columns={"Date": "date"})
+    return data.rename(columns=lambda column: column.lower())
+
+
 
 #development note: Alpha Vantage free tier does not support adjusted close prices
 #development paused due to this reason
