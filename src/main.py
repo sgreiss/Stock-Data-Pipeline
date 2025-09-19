@@ -48,19 +48,34 @@ def run(tickers, source, period, interval, csv_dir, sqlite_db) -> None:
         processed_data.to_sql(
             name="stock_data", con=engine, if_exists="append", index=False
         )
+        logging.info(
+            f"{c.GREEN}Data for {c.PURPLE}{ticker}{c.GREEN} inserted into database table {c.PURPLE}stock_data{c.GREEN}.{c.END}\n"
+        )
 
         processed_data["ticker"] = ticker
 
-        csv_path = os.path.join(csv_dir, f"{ticker}.csv")
-        logging.info(
-            f"{c.GREEN}Saving data for {c.PURPLE}{ticker}{c.GREEN} to CSV with path {c.PURPLE}{csv_path}{c.GREEN}...{c.END}\n"
-        )
-        save_to_csv(df=processed_data, path=csv_path)
+        if csv_dir is None:
+            logging.warning(
+                f"{c.YELLOW}CSV directory not specified. Skipping CSV save for {c.PURPLE}{ticker}{c.YELLOW}.{c.END}\n"
+            )
+        else:
+            csv_path = os.path.join(csv_dir, f"{ticker}.csv")
+            logging.info(
+                f"{c.GREEN}Saving data for {c.PURPLE}{ticker}{c.GREEN} to CSV with path {c.PURPLE}{csv_path}{c.GREEN}...{c.END}\n"
+            )
+            save_to_csv(df=processed_data, path=csv_path)
 
-        logging.info(
-            f"{c.GREEN}Saving data for {c.PURPLE}{ticker}{c.GREEN} to SQLite database {c.PURPLE}{sqlite_db}{c.GREEN}...{c.END}\n"
-        )
-        save_to_sqlite(df=processed_data, db_path=sqlite_db, table_name="stock_data")
+        if sqlite_db is None:
+            logging.warning(
+                f"{c.YELLOW}SQLite database path not specified. Skipping SQLite save for {c.PURPLE}{ticker}{c.YELLOW}.{c.END}\n"
+            )
+        else:
+            logging.info(
+                f"{c.GREEN}Saving data for {c.PURPLE}{ticker}{c.GREEN} to SQLite database {c.PURPLE}{sqlite_db}{c.GREEN}...{c.END}\n"
+            )
+            save_to_sqlite(
+                df=processed_data, db_path=sqlite_db, table_name="stock_data"
+            )
 
     logging.info(f"{c.BLUE}Data pipeline completed.{c.END}\n")
 
