@@ -2,15 +2,12 @@ import os
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 
-load_dotenv("../.env/database.env")
+load_dotenv("../.env")
 
-DB_USER = os.getenv("POSTGRES_USER")
-DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-DB_NAME = os.getenv("POSTGRES_DB")
-DB_HOST = os.getenv("POSTGRES_HOST", "localhost")
-DB_PORT = os.getenv("POSTGRES_PORT", "5432")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+if DATABASE_URL is None:
+    raise ValueError("DATABASE_URL environment variable is not set.")
 
 engine = create_engine(DATABASE_URL)
 

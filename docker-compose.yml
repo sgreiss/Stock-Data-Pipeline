@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:17
+    container_name: stock_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - stock_db_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: stock_app
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./src:/app/src
+    command: streamlit run src/app.py --server.port=8501 --server.address=0.0.0.0
+
+volumes:
+  stock_db_data:

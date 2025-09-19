@@ -3,7 +3,7 @@
 import os
 import streamlit as st
 import pandas as pd
-from sqlalchemy import text
+from sqlalchemy import text, inspect
 from database import get_engine
 from main import run
 from datetime import datetime
@@ -14,11 +14,15 @@ st.set_page_config(page_title="Stock Dashboard", layout="wide")
 st.title("Stock Data Dashboard")
 
 engine = get_engine()
+inspector = inspect(engine)
 
-query = text("SELECT DISTINCT ticker FROM stock_data ORDER BY ticker")
+if "stock_data" not in inspector.get_table_names():
+    tickers = []
+else:
+    query = text("SELECT DISTINCT ticker FROM stock_data ORDER BY ticker")
 
-with engine.connect() as conn:
-    tickers = pd.read_sql(query, conn)["ticker"].tolist()
+    with engine.connect() as conn:
+        tickers = pd.read_sql(query, conn)["ticker"].tolist()
 
 
 # sidebar
