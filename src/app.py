@@ -4,7 +4,7 @@ import os
 import streamlit as st
 import pandas as pd
 from sqlalchemy import text, inspect
-from database import get_engine
+from database import get_engine, fetch_stock_data
 from main import run
 from datetime import datetime
 import plotly.graph_objects as go
@@ -21,8 +21,7 @@ if "stock_data" not in inspector.get_table_names():
 else:
     query = text("SELECT DISTINCT ticker FROM stock_data ORDER BY ticker")
 
-    with engine.connect() as conn:
-        tickers = pd.read_sql(query, conn)["ticker"].tolist()
+    tickers = fetch_stock_data(query, engine, None)["ticker"].tolist()
 
 
 # sidebar
@@ -109,8 +108,7 @@ if len(date_range) == 2 and selected_tickers:
         "end_date": end_date,
     }
 
-    with engine.connect() as conn:
-        df = pd.read_sql(query, conn, params=params)
+    df = fetch_stock_data(query, engine, params=params)
 
 else:
     df = pd.DataFrame()
