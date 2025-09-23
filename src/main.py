@@ -4,7 +4,7 @@ import argparse
 import os
 import logging
 from text_colors import Colors as c
-from fetcher import fetch_yfinance, fetch_alpha_vantage
+from fetcher import fetch_yfinance
 from processor import process_data
 from storage import save_to_csv, save_to_sqlite
 from database import get_engine
@@ -15,23 +15,15 @@ logging.basicConfig(
 )
 
 
-def run(tickers, source, period, interval, csv_dir, sqlite_db) -> None:
+def run(tickers, period, interval, csv_dir, sqlite_db) -> None:
     logging.info(f"{c.GREEN}Starting data pipeline...{c.END}\n")
 
     for ticker in tickers:
         logging.info(
-            f"{c.GREEN}Fetching data for {c.PURPLE}{ticker}{c.GREEN} with period={c.PURPLE}{period}{c.GREEN} and interval={c.PURPLE}{interval}{c.GREEN} from {c.PURPLE}{source}{c.GREEN}...{c.END}\n"
+            f"{c.GREEN}Fetching data for {c.PURPLE}{ticker}{c.GREEN} with period={c.PURPLE}{period}{c.GREEN} and interval={c.PURPLE}{interval}{c.GREEN}...{c.END}\n"
         )
 
-        if source == "yfinance":
-            data = fetch_yfinance(ticker=ticker, period=period, interval=interval)
-        elif source == "alpha_vantage":
-            data = fetch_alpha_vantage(ticker=ticker)
-        else:
-            logging.error(
-                f"{c.RED}Unknown data source: {c.PURPLE}{source}{c.RED}.{c.END}\n"
-            )
-            continue
+        data = fetch_yfinance(ticker=ticker, period=period, interval=interval)
 
         if data.empty:
             logging.warning(
@@ -85,13 +77,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--tickers", type=str, default="AAPL", help="Comma separated tickers"
     )
-    parser.add_argument(
-        "--source",
-        type=str,
-        default="yfinance",
-        choices=["yfinance", "alpha_vantage"],
-        help="Data source",
-    )
     parser.add_argument("--period", type=str, default="1y", help="Data period")
     parser.add_argument("--interval", type=str, default="1d", help="Data interval")
     parser.add_argument(
@@ -106,7 +91,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     tickers = [ticker.strip().upper() for ticker in args.tickers.split(",")]
-    run(tickers, args.source, args.period, args.interval, args.csv_dir, args.sqlite_db)
+    run(tickers, args.period, args.interval, args.csv_dir, args.sqlite_db)
 
 # example usage: python main.py --tickers AAPL,MSFT --source yfinance --period 6mo --interval 1d
 # run venv with .venv\Scripts\activate

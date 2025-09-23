@@ -1,6 +1,5 @@
 # app.py
 
-import os
 import streamlit as st
 import pandas as pd
 from sqlalchemy import text, inspect
@@ -46,8 +45,7 @@ st.sidebar.header("Data Manager")
 
 with st.sidebar.expander("Load New Data"):
     tickers_input = st.text_input("Enter Tickers (comma separated)", value="AAPL,MSFT")
-    source = st.selectbox("Data Source", ["yfinance", "alpha_vantage"], index=0)
-
+    
     period = st.selectbox(
         "Data Period",
         ["1d", "5d", "1mo", "3mo", "6mo", "1y", "2y", "5y", "ytd", "max"],
@@ -66,7 +64,6 @@ with st.sidebar.expander("Load New Data"):
         try:
             run(
                 tickers_list,
-                source,
                 period,
                 interval,
                 csv_dir=None,
